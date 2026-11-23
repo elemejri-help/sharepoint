@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demande de modifications SharePoint - CDÉNÉ</title>
+<style>
+:root{
+  --blue:#003a70; --green:#1f8a58; --bg:#c9d9e8;
+  --border:#6885a5; --dark:#0f1a2b; --field:#e6e8eb;
+}
+*{box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:#222;margin:0;padding:16px}
+.wrap{max-width:900px;margin:auto}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;
+  background:#c9d9e8;border:2px solid var(--border);border-radius:12px;
+  padding:12px 16px;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.topbar img{width:140px;height:auto}
+.topbar .contact{font-size:13px;color:#1e4f38;text-align:right}
+.topbar .contact span{display:block}
+h1{color:var(--blue);font-size:1.5em;margin:10px 0 4px;text-align:center}
+.sub{text-align:center;font-size:14px;margin:0 0 18px}
+
+/* Identification */
+.ident{background:#c9d9e8;border:2px solid var(--border);border-radius:10px;
+  padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ident label{font-weight:bold;font-size:14px}
+.ident input{flex:1;min-width:200px;padding:9px 10px;border:1px solid var(--border);
+  border-radius:6px;background:var(--field);font-size:15px;font-weight:600;color:#1f2d4f}
+
+/* Cartes catégories */
+.cat-list{display:flex;flex-direction:column;gap:14px}
+.cat{background:#c9d9e8;border:2px solid var(--border);border-radius:12px;
+  padding:18px 20px;cursor:pointer;transition:.15s;box-shadow:0 2px 4px rgba(0,0,0,.08);
+  display:flex;align-items:center;justify-content:space-between}
+.cat:hover{border-color:var(--green);box-shadow:0 4px 10px rgba(0,0,0,.15);transform:translateY(-2px)}
+.cat h3{margin:0;color:var(--blue);font-size:1.2em}
+.cat p{margin:4px 0 0;font-size:13px;color:#33465f}
+.cat .arrow{font-size:1.4em;color:var(--green);font-weight:bold}
+
+/* Liste des demandes */
+.hidden{display:none}
+.back{background:none;border:none;color:var(--blue);font-weight:700;font-size:15px;
+  cursor:pointer;padding:6px 0;margin-bottom:10px}
+.page-head{background:#c9d9e8;border:2px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px}
+.page-head h2{margin:0;color:var(--blue)}
+
+.req-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.req-item{background:#c9d9e8;border:2px solid var(--border);border-radius:10px;
+  padding:14px 16px;cursor:pointer;transition:.15s}
+.req-item:hover{border-color:var(--green);box-shadow:0 3px 8px rgba(0,0,0,.12)}
+.req-item .t{font-weight:700;color:var(--dark)}
+.req-item .d{font-size:13px;color:#33465f;margin-top:3px}
+
+/* Formulaire */
+.form-head{background:#c9d9e8;border:2px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px}
+.form-head h2{margin:0 0 4px;color:var(--blue)}
+.form-head .cat-tag{font-size:13px;color:#33465f}
+.field{display:flex;flex-direction:column;margin-bottom:14px}
+.field label{font-weight:bold;font-size:14px;margin-bottom:5px}
+.field label .opt{font-weight:400;font-style:italic;color:#5a6b7d}
+.field input,.field select,.field textarea{padding:10px;border:1px solid var(--border);
+  border-radius:6px;background:var(--field);font-size:15px;color:#1f2d4f;font-family:inherit}
+.field textarea{min-height:90px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-box{background:#c9d9e8;border:2px solid var(--border);border-radius:12px;padding:18px}
+
+.pdfbtn{width:100%;background:var(--green);color:#fff;border:none;border-radius:8px;
+  padding:14px;font-weight:bold;font-size:1.05em;cursor:pointer;margin-top:18px}
+.pdfbtn:hover{background:#196f47}
+.pdfbtn:disabled{opacity:.6;cursor:default}
+
+@media(max-width:640px){.grid2{grid-template-columns:1fr}.topbar .contact{text-align:left}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <img src="https://pfst.cf2.poecdn.net/base/image/6d4995a47e5cf7a45172847ef067170a998ddf965eb35e3c6cf41c542b15c373?w=600&h=238" alt="Logo CDÉNÉ">
+    <div class="contact">
+      <span>✉️ emejri@cdene.ns.ca</span>
+      <span>☎️ 902-422-2752</span>
+    </div>
+  </div>
+
+  <h1>Demande de modifications pour SharePoint</h1>
+  <p class="sub">Choisissez une catégorie, puis le type de demande. Remplissez le formulaire et téléchargez-le en PDF pour l'envoyer à l'équipe TI.</p>
+
+  <div class="ident">
+    <label for="demandeur">Nom du demandeur :</label>
+    <input type="text" id="demandeur" placeholder="Votre nom">
+  </div>
+
+  <!-- INTERFACE 1 : catégories (accueil) -->
+  <div id="screenHome">
+    <div class="cat-list" id="catList"></div>
+  </div>
+
+  <!-- INTERFACE 2 : liste des demandes d'une catégorie -->
+  <div id="screenCat" class="hidden">
+    <button class="back" id="btnBackHome">← Retour à l'accueil</button>
+    <div class="page-head"><h2 id="catTitle"></h2></div>
+    <ul class="req-list" id="reqList"></ul>
+  </div>
+
+  <!-- INTERFACE 3 : formulaire -->
+  <div id="screenForm" class="hidden">
+    <button class="back" id="btnBackCat">← Retour à la liste</button>
+    <div class="form-head">
+      <h2 id="formTitle"></h2>
+      <div class="cat-tag" id="formCatTag"></div>
+    </div>
+    <div class="form-box">
+      <div class="field">
+        <label>1. Nom du demandeur</label>
+        <input type="text" id="f_demandeur" readonly>
+      </div>
+      <div class="field">
+        <label>2. Site SharePoint</label>
+        <select id="f_site">
+        <option value="">— Choisir un site —</option>
+          <option>All Company</option>
+          <option>Bureau de projets</option>
+          <option>CDÉNÉ - Communication &amp; Ressources</option>
+          <option>CDÉNÉ-Halifax</option>
+          <option>CFA Clare comité consultatif</option>
+          <option>Comité Santé et Sécurité au travail - CDÉNÉ</option>
+          <option>Communication</option>
+          <option>Comptabilité et finances</option>
+          <option>CÉC Board Members + Associates</option>
+          <option>Direction générale</option>
+          <option>Forum économique 2027</option>
+          <option>Haute Gestion</option>
+          <option>Immigration Économique - CFA Clare</option>
+          <option>Immigration Économique, CFA Clare, et Chéticamp</option>
+          <option>OFFBOARDED USERS</option>
+          <option>Parlons de Carrière</option>
+          <option>Projets spéciaux</option>
+          <option>Recrutement international</option>
+          <option>Ressources humaines</option>
+          <option>SE</option>
+          <option>Équipe des services aux entreprises et entrepreneurs</option>
+          <option>Équipe SAE-Centre et Nord</option>
+          <option>Équipe SDÉC</option>
+          <option>Équipe SE</option>
+          <option>Autre (préciser dans le commentaire)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>3. Type de demande</label>
+        <input type="text" id="f_type" readonly>
+      </div>
+      <div class="field">
+        <label>4. Employé concerné <span class="opt">(si applicable)</span></label>
+        <input type="text" id="f_employe" placeholder="Nom de l'employé concerné">
+      </div>
+      <div class="field">
+        <label>4b. Groupe de sécurité concerné <span class="opt">(si applicable)</span></label>
+        <select id="f_groupe">
+        <option value="">— Choisir un groupe (si applicable) —</option>
+          <option>All Users</option>
+          <option>C-G-IE — Gestionnaire, Immigration économique</option>
+          <option>C-G-SAE — Gestionnaire, Service aux entreprises</option>
+          <option>C-G-SDEC — Gestionnaire, SDEC</option>
+          <option>C-G-SE — Gestionnaire, Services emploi</option>
+          <option>C-Tourisme</option>
+          <option>CF-ARH — Comptabilité et finances - Agente RH</option>
+          <option>CF-COM — communication</option>
+          <option>CF-DO — Directeur des opérations</option>
+          <option>CF-Fin</option>
+          <option>CF-IE — Comptabilité et Finances - Immigration économique</option>
+          <option>CF-PMO</option>
+          <option>CF-SAE — Services a l&#x27;emploi Centre et Nord</option>
+          <option>CF-SDEC — Comptabilité et finances - SDÉC</option>
+          <option>CF-SE — Comptabilité et finances - Services Emploi</option>
+          <option>CF-SEA — Comptabilité et finances - Services aux entreprises et entrepreneurs</option>
+          <option>DG - Direction générale — Groupe de sécurité pour donner accès plus facilement à tous les sites SharePoint car le courriel dg@ va être converti en courriel nominatif</option>
+          <option>Director of Operations</option>
+          <option>DO – Directeur des opérations</option>
+          <option>IE-ACFA-CH — agent CFA cheticamp</option>
+          <option>IE-ACFA-CL — Agent CFA</option>
+          <option>IE-AE — Agent employabilité</option>
+          <option>IE-APR — Agent de projet Rapatriement</option>
+          <option>IE-CCFA-CC — Coordinateur CFA</option>
+          <option>IE-CE — Coordinateur employabilité</option>
+          <option>IE-EI — Entrepreneuriat immigrant</option>
+          <option>IT</option>
+          <option>SAE-CN-Gestionnaire</option>
+          <option>SAE_CN_Agents</option>
+          <option>SDEC-Argyle</option>
+          <option>SDEC-Chéticamp</option>
+          <option>SDEC-Clare</option>
+          <option>SDEC-Halifax</option>
+          <option>SDEC-Isle Madame</option>
+          <option>SDEC-Tourisme</option>
+          <option>SDÉC-Comm — Communications</option>
+          <option>SDÉC-Employés — SDÉC employés - sans gestionnaire</option>
+          <option>SE-CE — Services à l&#x27;emploi - Chef d&#x27;équipe</option>
+          <option>SE-GC — Services à l&#x27;emploi - Gestionnaires de cas</option>
+          <option>SE-LS — Services à l&#x27;emploi - Agente de liaison scolaire</option>
+          <option>SE-SME — Services à l&#x27;emploi - Spécialiste en mobilisation des employeurs</option>
+          <option>Autre (préciser dans le commentaire)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>5. Dossier concerné (chemin) <span class="opt">(si applicable)</span></label>
+        <input type="text" id="f_dossier" placeholder="Ex : Finances / Factures / 2026">
+      </div>
+      <div class="field">
+        <label>6. Niveau d'accès <span class="opt">(si applicable)</span></label>
+        <select id="f_acces">
+          <option value="">— Choisir —</option>
+          <option>Consultation</option>
+          <option>Modification</option>
+          <option>Retirer</option>
+        </select>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>7a. Date d'effet</label>
+          <input type="date" id="f_date_effet">
+        </div>
+        <div class="field">
+          <label>7b. Date de fin <span class="opt">(si temporaire)</span></label>
+          <input type="date" id="f_date_fin">
+        </div>
+      </div>
+      <div class="field">
+        <label>8. Justification ou commentaire</label>
+        <textarea id="f_commentaire" placeholder="Précisez le besoin, le contexte, l'approbation obtenue, etc."></textarea>
+      </div>
+      <button id="btnPdf" class="pdfbtn">📄 Télécharger le PDF</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ===== Catégories et types de demandes =====
+const CATEGORIES = [
+  {
+    id:"personnes", titre:"A. Personnes",
+    desc:"Arrivée, départ, changement de rôle, accès temporaire ou externe.",
+    demandes:[
+      {t:"Arrivée d'un employé", d:"L'ajouter au site et à son groupe de sécurité, et créer son dossier personnel (FD_) si besoin."},
+      {t:"Départ d'un employé", d:"Retirer ses accès, et décider si on garde ou archive ses dossiers."},
+      {t:"Changement de poste ou de rôle", d:"Le changer de groupe de sécurité."},
+      {t:"Accès temporaire", d:"Stagiaire, remplacement, employé d'été (avec une date de fin)."},
+      {t:"Accès externe", d:"Partenaire ou consultant (à approuver par la direction)."}
+    ]
+  },
+  {
+    id:"acces", titre:"B. Accès aux dossiers",
+    desc:"Donner, modifier, retirer ou vérifier les accès à un dossier.",
+    demandes:[
+      {t:"Donner ou modifier un accès", d:"Accès d'un groupe ou d'une personne à un dossier (Consultation ou Modification)."},
+      {t:"Retirer un accès à un dossier", d:"Supprimer l'accès d'un groupe ou d'une personne."},
+      {t:"Vérifier qui a accès (rapport)", d:"Obtenir la liste des personnes ayant accès à un dossier."}
+    ]
+  },
+  {
+    id:"structure", titre:"C. Structure du site",
+    desc:"Créer, renommer, déplacer, supprimer ou restaurer des dossiers et fichiers.",
+    demandes:[
+      {t:"Créer un dossier ou sous-dossier", d:"Avec ses accès."},
+      {t:"Renommer, déplacer ou supprimer un dossier", d:"Modification de la structure existante."},
+      {t:"Restaurer un fichier ou une version", d:"Fichier supprimé, ou ancienne version d'un fichier."}
+    ]
+  },
+  {
+    id:"equipe", titre:"D. Équipe et site",
+    desc:"Membres d'une équipe Teams, nouveaux sites, problèmes techniques.",
+    demandes:[
+      {t:"Ajouter ou retirer un membre Teams", d:"Pour les conversations de l'équipe."},
+      {t:"Créer un nouveau site ou une nouvelle équipe", d:"Nouveau site SharePoint ou nouvelle équipe Teams."},
+      {t:"Problème ou autre", d:"Accès refusé, lien qui ne fonctionne pas, synchronisation OneDrive."}
+    ]
+  }
+];
+
+let currentCat = null;
+
+function renderHome(){
+  const list = document.getElementById('catList');
+  list.innerHTML = '';
+  CATEGORIES.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'cat';
+    el.innerHTML = '<div><h3>'+c.titre+'</h3><p>'+c.desc+'</p></div><span class="arrow">→</span>';
+    el.addEventListener('click', ()=>openCat(c.id));
+    list.appendChild(el);
+  });
+}
+
+function openCat(id){
+  currentCat = CATEGORIES.find(c=>c.id===id);
+  document.getElementById('catTitle').textContent = currentCat.titre;
+  const ul = document.getElementById('reqList');
+  ul.innerHTML = '';
+  currentCat.demandes.forEach(dem => {
+    const li = document.createElement('li');
+    li.className = 'req-item';
+    li.innerHTML = '<div class="t">'+dem.t+'</div><div class="d">'+dem.d+'</div>';
+    li.addEventListener('click', ()=>openForm(dem.t));
+    ul.appendChild(li);
+  });
+  show('screenCat');
+}
+
+function openForm(typeDemande){
+  document.getElementById('formTitle').textContent = typeDemande;
+  document.getElementById('formCatTag').textContent = 'Catégorie : ' + currentCat.titre;
+  document.getElementById('f_type').value = typeDemande;
+  document.getElementById('f_demandeur').value = document.getElementById('demandeur').value;
+  show('screenForm');
+}
+
+function show(id){
+  ['screenHome','screenCat','screenForm'].forEach(s=>{
+    document.getElementById(s).classList.toggle('hidden', s!==id);
+  });
+  window.scrollTo(0,0);
+}
+
+document.getElementById('btnBackHome').addEventListener('click', ()=>show('screenHome'));
+document.getElementById('btnBackCat').addEventListener('click', ()=>show('screenCat'));
+
+// Nom du demandeur -> recopié dans le formulaire + mémorisé
+document.getElementById('demandeur').addEventListener('input', ()=>{
+  document.getElementById('f_demandeur').value = document.getElementById('demandeur').value;
+  try{ localStorage.setItem('cdene_sp_demandeur', document.getElementById('demandeur').value); }catch(e){}
+});
+try{
+  const last = localStorage.getItem('cdene_sp_demandeur');
+  if(last) document.getElementById('demandeur').value = last;
+}catch(e){}
+
+renderHome();
+
+// ===== Génération PDF =====
+document.getElementById('btnPdf').addEventListener('click', async function(){
+  const btn = this;
+  const jsPDFctor = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if(!window.jspdf && !window.jsPDF){ alert('Librairie PDF non chargée.'); return; }
+
+  const val = id => document.getElementById(id).value || '—';
+  const pdf = new jsPDFctor({orientation:'p', unit:'pt', format:'a4'});
+  const pw = pdf.internal.pageSize.getWidth();
+  let y = 48;
+
+  pdf.setFillColor(201,217,232); pdf.rect(0,0,pw,pdf.internal.pageSize.getHeight(),'F');
+
+  pdf.setTextColor(0,58,112); pdf.setFont('helvetica','bold'); pdf.setFontSize(16);
+  pdf.text('Demande de modifications SharePoint', pw/2, y, {align:'center'}); y+=22;
+  pdf.setFontSize(11); pdf.setFont('helvetica','normal'); pdf.setTextColor(30,79,56);
+  pdf.text('CDÉNÉ  •  emejri@cdene.ns.ca  •  902-422-2752', pw/2, y, {align:'center'}); y+=28;
+
+  const rows = [
+    ['Nom du demandeur', val('f_demandeur')],
+    ['Site SharePoint', val('f_site')],
+    ['Type de demande', val('f_type')],
+    ['Catégorie', currentCat ? currentCat.titre : '—'],
+    ['Employé concerné', val('f_employe')],
+    ['Groupe de sécurité', val('f_groupe')],
+    ['Dossier concerné', val('f_dossier')],
+    ["Niveau d'accès", val('f_acces')],
+    ["Date d'effet", val('f_date_effet')],
+    ['Date de fin', val('f_date_fin')],
+    ['Justification / commentaire', val('f_commentaire')]
+  ];
+
+  const mx=40, labelW=170, valX=mx+labelW+10, valW=pw-valX-mx;
+  pdf.setFontSize(11);
+  rows.forEach(([label,value])=>{
+    const lines = pdf.splitTextToSize(String(value), valW);
+    const rowH = Math.max(22, lines.length*15 + 8);
+    pdf.setDrawColor(104,133,165); pdf.setFillColor(255,255,255);
+    pdf.roundedRect(mx, y, pw-mx*2, rowH, 4,4,'FD');
+    pdf.setTextColor(15,26,43); pdf.setFont('helvetica','bold');
+    pdf.text(label, mx+8, y+15);
+    pdf.setFont('helvetica','normal'); pdf.setTextColor(31,45,79);
+    pdf.text(lines, valX, y+15);
+    y += rowH + 8;
+    if(y > pdf.internal.pageSize.getHeight()-60){ pdf.addPage(); pdf.setFillColor(201,217,232); pdf.rect(0,0,pw,pdf.internal.pageSize.getHeight(),'F'); y=48; }
+  });
+
+  const dateStr = new Date().toLocaleDateString('fr-CA');
+  pdf.setFontSize(9); pdf.setTextColor(90,107,125);
+  pdf.text('Généré le '+dateStr, pw/2, pdf.internal.pageSize.getHeight()-30, {align:'center'});
+
+  const who = (val('f_demandeur')||'demande').replace(/[^\w]+/g,'_');
+  pdf.save('Demande_SharePoint_'+who+'.pdf');
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</body>
+</html>
