@@ -113,12 +113,9 @@ h1{color:var(--blue);font-size:1.5em;margin:10px 0 4px;text-align:center}
       <div class="cat-tag" id="formCatTag"></div>
     </div>
     <div class="form-box">
+      <input type="hidden" id="f_demandeur">
       <div class="field">
-        <label>1. Nom du demandeur</label>
-        <input type="text" id="f_demandeur" readonly>
-      </div>
-      <div class="field">
-        <label>2. Site SharePoint</label>
+        <label>1. Site SharePoint</label>
         <select id="f_site">
         <option value="">— Choisir un site —</option>
           <option>All Company</option>
@@ -149,15 +146,15 @@ h1{color:var(--blue);font-size:1.5em;margin:10px 0 4px;text-align:center}
         </select>
       </div>
       <div class="field">
-        <label>3. Type de demande</label>
+        <label>2. Type de demande</label>
         <input type="text" id="f_type" readonly>
       </div>
       <div class="field">
-        <label>4. Employé concerné <span class="opt">(si applicable)</span></label>
+        <label>3. Employé concerné <span class="opt">(si applicable)</span></label>
         <input type="text" id="f_employe" placeholder="Nom de l'employé concerné">
       </div>
       <div class="field">
-        <label>4b. Groupe de sécurité concerné <span class="opt">(si applicable)</span></label>
+        <label>3b. Groupe de sécurité concerné <span class="opt">(si applicable)</span></label>
         <select id="f_groupe">
         <option value="">— Choisir un groupe (si applicable) —</option>
           <option>All Users</option>
@@ -205,11 +202,11 @@ h1{color:var(--blue);font-size:1.5em;margin:10px 0 4px;text-align:center}
         </select>
       </div>
       <div class="field">
-        <label>5. Dossier concerné (chemin) <span class="opt">(si applicable)</span></label>
+        <label>4. Dossier concerné (chemin) <span class="opt">(si applicable)</span></label>
         <input type="text" id="f_dossier" placeholder="Ex : Finances / Factures / 2026">
       </div>
       <div class="field">
-        <label>6. Niveau d'accès <span class="opt">(si applicable)</span></label>
+        <label>5. Niveau d'accès <span class="opt">(si applicable)</span></label>
         <select id="f_acces">
           <option value="">— Choisir —</option>
           <option>Consultation</option>
@@ -219,16 +216,16 @@ h1{color:var(--blue);font-size:1.5em;margin:10px 0 4px;text-align:center}
       </div>
       <div class="grid2">
         <div class="field">
-          <label>7a. Date d'effet</label>
+          <label>6a. Date d'effet</label>
           <input type="date" id="f_date_effet">
         </div>
         <div class="field">
-          <label>7b. Date de fin <span class="opt">(si temporaire)</span></label>
+          <label>6b. Date de fin <span class="opt">(si temporaire)</span></label>
           <input type="date" id="f_date_fin">
         </div>
       </div>
       <div class="field">
-        <label>8. Justification ou commentaire</label>
+        <label>7. Justification ou commentaire</label>
         <textarea id="f_commentaire" placeholder="Précisez le besoin, le contexte, l'approbation obtenue, etc."></textarea>
       </div>
       <button id="btnPdf" class="pdfbtn">📄 Télécharger le PDF</button>
